@@ -5,6 +5,7 @@
 #  id                       :bigint           not null, primary key
 #  vehicle_id               :bigint
 #  vehicle_configuration_id :bigint
+#  description              :string
 #  monthly_price            :decimal(, )
 #  duration                 :integer
 #  mileage                  :decimal(, )

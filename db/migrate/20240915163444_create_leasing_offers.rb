@@ -3,6 +3,7 @@ class CreateLeasingOffers < ActiveRecord::Migration[7.2]
     create_table :leasing_offers do |t|
       t.references :vehicle, foreign_key: true
       t.references :vehicle_configuration, foreign_key: true
+      t.string :description
       t.decimal :monthly_price
       t.integer :duration
       t.decimal :mileage

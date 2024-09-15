@@ -17,6 +17,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_15_163444) do
   create_table "leasing_offers", force: :cascade do |t|
     t.bigint "vehicle_id"
     t.bigint "vehicle_configuration_id"
+    t.string "description"
     t.decimal "monthly_price"
     t.integer "duration"
     t.decimal "mileage"
