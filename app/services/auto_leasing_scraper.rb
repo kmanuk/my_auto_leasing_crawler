@@ -2,30 +2,36 @@ require 'httparty'
 require 'nokogiri'
 
 class AutoLeasingScraper
-  BASE_URL = "https://example-autoleasing.com"
+  BASE_URL = "https://www.leasingmarkt.de/listing?v=2&nc=1&tg=PRIVATE&g[]=a&sfid[]=4&sfid[]=1&sfid[]=2&mlpf=251&mlpt=300&kombi=1&gelaende=1&limousine=1&ym=10000&dt=24&pimt=2&sort=rateDesc&p="
 
-  # Scrape a single page of vehicle listings
   def self.scrape_page(page_number)
-    binding.pry
-    url = "#{BASE_URL}/vehicles?page=#{page_number}"
+    url = "#{BASE_URL}#{page_number}"
     response = HTTParty.get(url)
 
-    # Check for a successful response
     if response.code == 200
       parsed_page = Nokogiri::HTML(response.body)
 
-      # Loop through each vehicle listing on the page
-      parsed_page.css('.vehicle-item').each do |vehicle_item|
-        make = vehicle_item.css('.make').text.strip
-        model = vehicle_item.css('.model').text.strip
-        price = vehicle_item.css('.price').text.gsub(/[^\d]/, '').to_i  # Remove non-numeric characters
+      # Loop through each vehicle item using relevant class (adjust based on your full HTML structure)
+      parsed_page.css('.offeritem').each do |vehicle_item|
+        # Extract vehicle title (make and model) - adjust the CSS selectors accordingly
+        make_model = vehicle_item.css('.h4').text.strip
 
-        # Save or update the vehicle data in the database
+        # Extract price - you may need to adjust this selector
+        price = vehicle_item.css('.lm-offeritem-price').text.gsub(/[^\d]/, '').to_i
+
+        # You can extract other information like lease duration, mileage, etc.
+        lease_duration = vehicle_item.css('.duration').text.strip
+        mileage = vehicle_item.css('.mileage').text.strip
+
+        # Split make and model if necessary (adjust based on actual structure)
+        make, model = make_model.split(' ', 2)
+
+        # Save or update vehicle data
         vehicle = Vehicle.find_or_initialize_by(make: make, model: model)
         vehicle.price = price
+        vehicle.lease_duration = lease_duration
+        vehicle.mileage = mileage
         vehicle.save!
-
-        # You can add more scraping logic here for lease terms, images, etc.
       end
     else
       puts "Failed to retrieve page #{page_number}: #{response.code}"
@@ -34,7 +40,6 @@ class AutoLeasingScraper
     puts "Error scraping page #{page_number}: #{e.message}"
   end
 
-  # Scrape multiple pages
   def self.scrape_all_pages(max_pages = 5)
     (1..max_pages).each do |page|
       puts "Scraping page #{page}..."
