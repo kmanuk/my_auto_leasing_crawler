@@ -2,7 +2,7 @@
 class CreateVehicles < ActiveRecord::Migration[7.2]
   def change
     create_table :vehicles do |t|
-      t.string :brand_name
+      t.references :vehicle_brand, foreign_key: true
       t.string :model_name
       t.timestamps
     end

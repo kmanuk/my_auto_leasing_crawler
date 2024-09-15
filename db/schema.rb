@@ -29,6 +29,12 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_15_163444) do
     t.index ["vehicle_id"], name: "index_leasing_offers_on_vehicle_id"
   end
 
+  create_table "vehicle_brands", force: :cascade do |t|
+    t.string "brand_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "vehicle_configurations", force: :cascade do |t|
     t.integer "vehicle_type"
     t.integer "fuel"
@@ -40,12 +46,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_15_163444) do
   end
 
   create_table "vehicles", force: :cascade do |t|
-    t.string "brand_name"
+    t.bigint "vehicle_brand_id"
     t.string "model_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["vehicle_brand_id"], name: "index_vehicles_on_vehicle_brand_id"
   end
 
   add_foreign_key "leasing_offers", "vehicle_configurations"
   add_foreign_key "leasing_offers", "vehicles"
+  add_foreign_key "vehicles", "vehicle_brands"
 end
