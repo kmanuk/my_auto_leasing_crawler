@@ -10,26 +10,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_15_132058) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_15_163444) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "leases", force: :cascade do |t|
+  create_table "leasing_offers", force: :cascade do |t|
     t.bigint "vehicle_id"
-    t.integer "monthly_price"
+    t.bigint "vehicle_configuration_id"
+    t.decimal "monthly_price"
     t.integer "duration"
+    t.decimal "mileage"
+    t.decimal "price_primary"
+    t.decimal "price_secondary"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["vehicle_id"], name: "index_leases_on_vehicle_id"
+    t.index ["vehicle_configuration_id"], name: "index_leasing_offers_on_vehicle_configuration_id"
+    t.index ["vehicle_id"], name: "index_leasing_offers_on_vehicle_id"
+  end
+
+  create_table "vehicle_configurations", force: :cascade do |t|
+    t.integer "vehicle_type"
+    t.integer "fuel"
+    t.integer "transmission"
+    t.integer "year"
+    t.integer "horse_power"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "vehicles", force: :cascade do |t|
-    t.string "make"
-    t.string "model"
-    t.integer "price"
+    t.string "brand_name"
+    t.string "model_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "leases", "vehicles"
+  add_foreign_key "leasing_offers", "vehicle_configurations"
+  add_foreign_key "leasing_offers", "vehicles"
 end

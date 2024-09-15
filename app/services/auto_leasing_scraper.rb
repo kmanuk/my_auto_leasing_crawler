@@ -10,28 +10,42 @@ class AutoLeasingScraper
 
     if response.code == 200
       parsed_page = Nokogiri::HTML(response.body)
-      binding.pry
-      # Loop through each vehicle item using relevant class (adjust based on your full HTML structure)
-      parsed_page.css('.ad-card-item').each do |vehicle_item|
-        # Extract vehicle title (make and model) - adjust the CSS selectors accordingly
-        make_model = vehicle_item.css('.listing-card__info').text.strip
 
-        # Extract price - you may need to adjust this selector
-        price = vehicle_item.css('.lm-offeritem-price').text.gsub(/[^\d]/, '').to_i
+      # Loop through each vehicle item using relevant class
+      parsed_page.css('a.ad-card-item').each do |vehicle_item|
+        # Extract vehicle name (make and model)
+        vehicle_name = vehicle_item.css('.listing-card__car-name .title').text.strip
+        vehicle_subtitle = vehicle_item.css('.listing-card__car-name .subtitle').text.strip
 
-        # You can extract other information like lease duration, mileage, etc.
-        lease_duration = vehicle_item.css('.duration').text.strip
-        mileage = vehicle_item.css('.mileage').text.strip
+        # Extract price (primary and secondary)
+        price_primary = vehicle_item.css('.block-price-tag__primary-price span').text.gsub(/[^\d,]/, '').gsub(',', '.').to_f
+        price_secondary = vehicle_item.css('.block-price-tag__secondary-price').text.gsub(/[^\d,]/, '').gsub(',', '.').to_f
 
-        # Split make and model if necessary (adjust based on actual structure)
-        make, model = make_model.split(' ', 2)
+        # Extract mileage and lease duration
+        mileage = vehicle_item.css('.listing-card__leasing-conditions .info-item').first.text.strip
+        lease_duration = vehicle_item.css('.listing-card__leasing-conditions .info-item').last.text.strip
+
+        # Extract other vehicle details (fuel type, transmission, horsepower, availability, etc.)
+        fuel_type = vehicle_item.css('li').select { |li| li.text.include?('Diesel') || li.text.include?('Benzin') }.first&.text&.strip
+        horsepower = vehicle_item.css('li').select { |li| li.text.include?('PS') }.first&.text&.strip
+        transmission = vehicle_item.css('li').select { |li| li.text.include?('Automatik') || li.text.include?('Schaltgetriebe') }.first&.text&.strip
+        mileage_state = vehicle_item.css('li').select { |li| li.text.include?('km') }.first&.text&.strip
+        availability = vehicle_item.css('li').select { |li| li.text.include?('Verfügbar') }.first&.text&.strip
 
         # Save or update vehicle data
-        vehicle = Vehicle.find_or_initialize_by(make: make, model: model)
-        vehicle.price = price
-        vehicle.lease_duration = lease_duration
+        vehicle = Vehicle.find_or_initialize_by(model: vehicle_name, subtitle: vehicle_subtitle)
+        vehicle.price = price_primary
+        vehicle.price_secondary = price_secondary
         vehicle.mileage = mileage
+        vehicle.lease_duration = lease_duration
+        vehicle.fuel_type = fuel_type
+        vehicle.horsepower = horsepower
+        vehicle.transmission = transmission
+        vehicle.mileage_state = mileage_state
+        vehicle.availability = availability
         vehicle.save!
+
+        puts "Saved vehicle: #{vehicle_name} - #{vehicle_subtitle}"
       end
     else
       puts "Failed to retrieve page #{page_number}: #{response.code}"
@@ -41,7 +55,7 @@ class AutoLeasingScraper
   end
 
   def self.scrape_all_pages(max_pages = 5)
-    (1..max_pages).each do |page|
+    (0..max_pages).each do |page|
       puts "Scraping page #{page}..."
       scrape_page(page)
     end
