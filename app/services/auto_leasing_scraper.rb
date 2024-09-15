@@ -10,11 +10,11 @@ class AutoLeasingScraper
 
     if response.code == 200
       parsed_page = Nokogiri::HTML(response.body)
-
+      binding.pry
       # Loop through each vehicle item using relevant class (adjust based on your full HTML structure)
-      parsed_page.css('.offeritem').each do |vehicle_item|
+      parsed_page.css('.ad-card-item').each do |vehicle_item|
         # Extract vehicle title (make and model) - adjust the CSS selectors accordingly
-        make_model = vehicle_item.css('.h4').text.strip
+        make_model = vehicle_item.css('.listing-card__info').text.strip
 
         # Extract price - you may need to adjust this selector
         price = vehicle_item.css('.lm-offeritem-price').text.gsub(/[^\d]/, '').to_i

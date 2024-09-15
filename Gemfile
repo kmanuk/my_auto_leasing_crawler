@@ -50,6 +50,7 @@ group :development, :test do
   gem 'listen'
   gem 'byebug'
   gem 'pry-rails'
+  gem 'rspec-rails'
 end
 
 group :development do
@@ -58,10 +59,16 @@ group :development do
 
   # Highlight the fine-grained location where an error occurred [https://github.com/ruby/error_highlight]
   gem "error_highlight", ">= 0.4.0", platforms: [:ruby]
+  gem 'annotate'
 end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+  gem 'database_cleaner'
+  gem 'rspec-its'
+  gem 'factory_bot_rails'
+  gem 'simplecov', require: false
+  gem 'shoulda-matchers'
 end
