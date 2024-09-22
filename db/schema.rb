@@ -47,7 +47,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_15_163444) do
 
   create_table "vehicles", force: :cascade do |t|
     t.bigint "vehicle_brand_id"
-    t.string "model_name"
+    t.string "car_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["vehicle_brand_id"], name: "index_vehicles_on_vehicle_brand_id"

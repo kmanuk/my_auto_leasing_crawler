@@ -4,7 +4,7 @@
 #
 #  id               :bigint           not null, primary key
 #  vehicle_brand_id :bigint
-#  model_name       :string
+#  car_name         :string
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #

@@ -12,7 +12,7 @@
 #  updated_at   :datetime         not null
 #
 class VehicleConfiguration < ApplicationRecord
-  enum vehicle_type: [:kombi, :suv, :limousine, :sport, :van, :cabrio, :small_car, :commercial, :motorhome]
-  enum fuel: [:benzin, :diesel, :electro, :hybrid, :gas, :other]
-  enum transmission: [:automatic, :manual, :semi]
+  enum vehicle_type: [:kombi, :suv, :limousine, :sportwagen, :van, :cabrio, :kleinwagen, :nutz, :kompakt, :reisemobil]
+  enum fuel: [:benzin, :diesel, :elektro, :hybrid, :autogas, :wasserstoff]
+  enum transmission: [:automatik, :manuell, :semi]
 end
