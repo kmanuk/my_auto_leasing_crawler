@@ -100,7 +100,7 @@ GEM
     connection_pool (2.4.1)
     crass (1.0.6)
     csv (3.3.0)
-    database_cleaner (2.0.2)
+    database_cleaner (2.1.0)
       database_cleaner-active_record (>= 2, < 3)
     database_cleaner-active_record (2.2.0)
       activerecord (>= 5.a)
@@ -136,7 +136,7 @@ GEM
       csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
-    i18n (1.14.5)
+    i18n (1.14.6)
       concurrent-ruby (~> 1.0)
     importmap-rails (2.0.1)
       actionpack (>= 6.0.0)
